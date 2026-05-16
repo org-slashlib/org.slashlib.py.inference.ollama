@@ -7,7 +7,7 @@ name = "org.slashlib.py.inference.ollama"
 version = "0.1.0"
 license = "MIT"
 dependencies = [
-  "org.slashlib.py.agent>0.1.5"
+  "org.slashlib.py.agent>0.1.5",
   "org.slashlib.py.configloader>=0.1.0"
 ]
 authors = [
@@ -35,12 +35,12 @@ pythonpath = ["."]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 addopts = """
-    -v  
-    --cov 
-    --cov=src/org/slashlib/py/inference/ollama 
-    --cov-report=term-missing 
-    --cov-report=xml:docs/reports/coverage/xml
-    --cov-report=html:docs/reports/coverage/html
+  -v  
+  --cov 
+  --cov=src/org/slashlib/py/inference/ollama 
+  --cov-report=term-missing 
+  --cov-report=xml:docs/reports/coverage/xml
+  --cov-report=html:docs/reports/coverage/html
 """
 
 [tool.coverage.run]

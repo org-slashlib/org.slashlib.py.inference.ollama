@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "org.slashlib.py.inference.ollama"
+version = "0.1.0"
+license = "MIT"
+dependencies = [
+  "org.slashlib.py.agent>0.1.5"
+  "org.slashlib.py.configloader>=0.1.0"
+]
+authors = [
+  { name="Dirk Brenckmann", email="db.developer@gmx.de" },
+]
+description = "python inference handler for agents"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.entry-points."org.slashlib.py.agent.inference"]
+ollama-inference-adapter = "org.slashlib.py.inference.ollama.adapter:OllamaInferenceAdapter"
+
+[project.urls]
+"Homepage" = "https://github.com/org-slashlib/org.slashlib.py.inference.ollama"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = """
+    -v  
+    --cov 
+    --cov=src/org/slashlib/py/inference/ollama 
+    --cov-report=term-missing 
+    --cov-report=xml:docs/reports/coverage/xml
+    --cov-report=html:docs/reports/coverage/html
+"""
+
+[tool.coverage.run]
+data_file = "docs/reports/coverage/.coverage"
+source = ["src/org/slashlib/py/inference/ollama"]
+
+[tool.coverage.report]
+show_missing = true

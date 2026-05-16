@@ -1,0 +1,18 @@
+{
+  "name": "Ollama inference interfaces",
+  "version": "0.1.0",
+  "paths": {
+    "root":         "{ROOT}",
+    "assets":       "{ROOT}/assets"
+  },
+  "assets": {
+    "logging":      "{paths.assets}/logging.json"
+  },
+  "adapter": {
+    "ollama": {
+      "model":      "gemma4",
+      "think":      true,
+      "timeout":    600.0
+    }
+  }
+}

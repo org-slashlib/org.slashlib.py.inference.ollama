@@ -13,6 +13,14 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - No Fixes yet
+
+---
+## [0.1.2] - 2026-05-16
+
+### Fixed
+
+- fixed package __init__.py
+
 ---
 ## [0.1.1] - 2026-05-16
 

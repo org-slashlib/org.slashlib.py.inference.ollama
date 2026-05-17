@@ -1,6 +1,6 @@
 {
   "name": "Ollama inference interfaces",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "paths": {
     "root":         "{ROOT}",
     "assets":       "{ROOT}/assets"
@@ -8,7 +8,7 @@
   "assets": {
     "logging":      "{paths.assets}/logging.json"
   },
-  "adapter": {
+  "inference": {
     "ollama": {
       "model":      "gemma4",
       "think":      true,

@@ -15,6 +15,13 @@ All notable changes to this project will be documented in this file.
 - No Fixes yet
 
 ---
+## [0.1.3] - 2026-05-17
+
+### Changed
+
+- parameter `think` has a resolving mechanism now, which considers the availability of tools.
+
+---
 ## [0.1.2] - 2026-05-16
 
 ### Fixed

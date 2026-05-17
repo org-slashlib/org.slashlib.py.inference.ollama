@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "org.slashlib.py.inference.ollama"
-version = "0.1.2"
+version = "0.1.3"
 license = "MIT"
 dependencies = [
-  "org.slashlib.py.agent>=0.1.5",
+  "org.slashlib.py.agent>=0.1.8",
   "org.slashlib.py.configloader>=0.1.0"
 ]
 authors = [

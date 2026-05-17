@@ -3,9 +3,7 @@
 
 The official **Ollama** inference adapter for the `org.slashlib.py.agent` framework.
 
-[![PyPI version](https://img.shields.io/pypi/v/org.slashlib.py.inference.ollama.svg?color=blue)](https://pypi.org/project/org.slashlib.py.inference.ollama/) 
-[![PyPI-Test version](https://img.shields.io/badge/pypitest-latest-blue)](https://test.pypi.org/project/org.slashlib.py.inference.ollama/) 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://img.shields.io/pypi/v/org.slashlib.py.inference.ollama.svg?color=blue)](https://pypi.org/project/org.slashlib.py.inference.ollama/) [![PyPI-Test version](https://img.shields.io/badge/pypitest-latest-blue)](https://test.pypi.org/project/org.slashlib.py.inference.ollama/) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -55,8 +53,8 @@ pip install -e .
 This adapter is designed to be \"invisible\" to the end user. It registers itself via the `pyproject.toml` entry points:
 
 ```toml
-[project.entry-points.\"org.slashlib.py.agent.inference\"]
-ollama = \"org.slashlib.py.inference.ollama.adapter:OllamaInferenceAdapter\"
+[project.entry-points."org.slashlib.py.agent.inference"]
+ollama = "org.slashlib.py.inference.ollama.adapter:OllamaInferenceAdapter"
 ```
 
 The framework automatically scans this group and maps the name `ollama` to the `OllamaInferenceAdapter` class.
@@ -76,11 +74,11 @@ The adapter's behavior is controlled via the framework's configuration loader (u
 **Example `pyproject.json`:**
 ```json
 {
-  \"adapter\": {
-    \"ollama\": {
-      \"model\": \"gemma\",
-      \"think\": true,
-      \"timeout\": 300.0
+  "inference": {
+    "ollama": {
+      "model": "gemma4",
+      "think": true,
+      "timeout": 300.0
     }
   }
 }
@@ -99,15 +97,15 @@ from org.slashlib.py.agent.agent import Agent
 async def main():
     # Load the agent - the framework resolves 'ollama' via Entry Points
     my_agent = Agent.from_plugin(
-        identifier=\"my-local-assistant\",
-        plugin_name=\"ollama\"
+        identifier="my-local-assistant",
+        plugin_name="ollama"
     )
 
     # All standard Agent methods are now available
-    response = await my_agent.chat(\"How does the plugin system work?\")
-    print(f\"Assistant: {response.content}\")
+    response = await my_agent.chat("How does the plugin system work?")
+    print(f"Assistant: {response.content}")
 
-if __name__ == \"__main__\":
+if __name__ == "__main__":
     asyncio.run(main())
 ```
 

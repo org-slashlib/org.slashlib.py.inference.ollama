@@ -42,6 +42,36 @@ class OllamaInferenceAdapter(agent.InferenceAdapter):
         """
         self.log = logging.getLogger(f"org.slashlib.py.inference.ollama.{pathlib.Path(__file__).stem}.{self.__class__.__name__}")
 
+    def _resolve_think(
+        self, 
+        tools: typing.Optional[typing.Union[typing.List, typing.Tuple]], 
+        **kwargs
+    ) -> bool:
+        """
+        Resolves the 'think' parameter based on explicit request or tool availability.
+
+        Logic:
+        1. If 'think' is provided in kwargs and is a boolean, use it.
+        2. Otherwise, if 'tools' is a non-empty list or tuple, 'think' defaults to True.
+        3. In all other cases, fallback to 'inference.ollama.think' from config.
+
+        Args:
+            tools (Optional[Union[List, Tuple]]): The tools passed to the chat method.
+            **kwargs: Arguments that may contain an explicit 'think' value.
+
+        Returns:
+            bool: The resolved value for the 'think' parameter.
+        """
+        think_kwarg = kwargs.get("think")
+        
+        if isinstance(think_kwarg, bool):
+            return think_kwarg
+
+        if isinstance(tools, (list, tuple)) and len(tools) > 0:
+            return True
+
+        return config.resolve("inference.ollama.think")
+
     async def chat(
         self, 
         model: typing.Optional[str] = None, 
@@ -71,20 +101,26 @@ class OllamaInferenceAdapter(agent.InferenceAdapter):
             agent.InferenceError: For any other unexpected errors during agent.
         """
         # Resolve parameters: priority is kwargs -> method arg -> pyproject.json
-        target_model = model or kwargs.get("model", config.resolve("adapter.ollama.model"))
-        timeout = kwargs.get("timeout", config.resolve("adapter.ollama.timeout"))
-        think = kwargs.get("think", config.resolve("adapter.ollama.think"))
+        target_model = model or kwargs.get("model", config.resolve("inference.ollama.model"))
+        timeout = kwargs.get("timeout", config.resolve("inference.ollama.timeout"))
+        think = self._resolve_think(tools, **kwargs)
 
         try:
             self.log.debug(f"Ollama request: timeout={timeout}, model={target_model}, messages={messages}, tools={tools}, think={think}")
             
+            # Prepare request parameters
+            payload = {
+                "model": target_model,
+                "messages": messages,
+                "think": think
+            }
+
+            # Add tools only if they are a non-empty list or tuple
+            if isinstance(tools, (list, tuple)) and len(tools) > 0:
+                payload["tools"] = tools
+
             client = ollama.AsyncClient(timeout=timeout)
-            response = await client.chat(
-                model=target_model,
-                messages=messages,
-                tools=tools,
-                think=think
-            )
+            response = await client.chat(**payload)
 
             self.log.debug(f"Ollama response: {response}")
             
@@ -106,7 +142,6 @@ class OllamaInferenceAdapter(agent.InferenceAdapter):
         except Exception as e:
             self.log.error(f"Unexpected error in OllamaInferenceAdapter: {e}", exc_info=True)
             raise agent.InferenceError(f"Internal adapter error: {str(e)}")
-
 
 __all__ = ["OllamaInferenceAdapter"]
 

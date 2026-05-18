@@ -6,9 +6,10 @@
   "enableCompatQuickExplorer": false,
   "attachmentFolderNames": [
     "assets",
-    "reports",
+    "dist",
     "downloads",
     "envs",
+    "reports",
     "src",
     "tests",
     "tmp"

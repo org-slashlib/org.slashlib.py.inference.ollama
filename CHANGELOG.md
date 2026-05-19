@@ -15,6 +15,18 @@ All notable changes to this project will be documented in this file.
 - No Fixes yet
 
 ---
+## [0.1.4] - 2026-05-19
+
+### Changed
+
+- removed data doubling from InferenceResult.
+  OllamaInferenceResult now works with original response from ollama
+
+### Added
+
+- added extended testing for adapter.py
+
+---
 ## [0.1.3] - 2026-05-17
 
 ### Changed

@@ -98,4 +98,59 @@ async def test_ollama_adapter_empty_message_payload(mock_client_class):
         await adapter.chat(messages=[])
 
 
+@pytest.mark.asyncio
+@patch("org.slashlib.py.configloader.resolve")
+@patch("ollama.AsyncClient")
+async def test_ollama_adapter_think_kwarg_override(mock_client_class, mock_config):
+    """
+    Test that explicit 'think' in kwargs overrides any other logic (Line 68 coverage).
+
+    Why:
+        To ensure that passing an explicit boolean for 'think' short-circuits 
+        the tool checking and configuration defaults, hitting line 68.
+
+    Assumptions & Design Decisions:
+        Utilizes an explicit `think=False` kwarg while providing tools, 
+        proving that the explicit argument takes structural priority.
+    """
+    mock_instance = AsyncMock()
+    mock_client_class.return_value = mock_instance
+    mock_instance.chat.return_value = {"message": {"role": "assistant", "content": "ok"}}
+    
+    adapter = OllamaInferenceAdapter()
+    
+    # Even with tools provided, think=False kwarg should win and bypass line 71
+    await adapter.chat(messages=[], tools=[{"type": "function"}], think=False)
+    
+    args, kwargs = mock_instance.chat.call_args
+    assert kwargs["think"] is False
+
+
+@pytest.mark.asyncio
+@patch("org.slashlib.py.configloader.resolve")
+@patch("ollama.AsyncClient")
+async def test_ollama_adapter_think_auto_true_with_tools(mock_client_class, mock_config):
+    """
+    Test that 'think' defaults to True if non-empty tools are provided (Line 71 coverage).
+
+    Why:
+        To achieve 100%++ path coverage for the conditional branch where 
+        tools trigger automated thinking behavior without explicit user overriding.
+
+    Assumptions & Design Decisions:
+        Omits the 'think' parameter from kwargs entirely, relying on the 
+        non-empty list structure to execute the truthy validation path.
+    """
+    mock_instance = AsyncMock()
+    mock_client_class.return_value = mock_instance
+    mock_instance.chat.return_value = {"message": {"role": "assistant", "content": "ok"}}
+    
+    adapter = OllamaInferenceAdapter()
+    
+    # No think kwarg, but non-empty tools list triggers line 71 -> True
+    await adapter.chat(messages=[], tools=[{"type": "function"}])
+    
+    args, kwargs = mock_instance.chat.call_args
+    assert kwargs["think"] is True
+
 # end of file tests/02_01_00_adapter.py

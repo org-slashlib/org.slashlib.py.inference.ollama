@@ -56,6 +56,17 @@ class OllamaInferenceResult(agent.InferenceResult):
             raise agent.InferencePayloadError(f"Invalid Ollama response: Both 'content' and 'tool_calls' are empty.")
 
     @property
+    def raw(self) -> typing.Dict[str, typing.Any]:
+        """
+        The raw response dictionary from the Ollama API.
+
+        Returns:
+            Dict[str, Any]: The original, unmodified 'message' payload
+                passed during initialization.
+        """
+        return self._raw
+
+    @property
     def role(self) -> str:
         """
         The role of the message sender.

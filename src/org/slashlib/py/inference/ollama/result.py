@@ -46,15 +46,13 @@ class OllamaInferenceResult(agent.InferenceResult):
                 'content' and 'tool_calls' are empty/None.
         """
         self.log = logging.getLogger(f"org.slashlib.py.inference.ollama.{pathlib.Path(__file__).stem}.{self.__class__.__name__}")
-        self._role = raw_response.get("role")
-        self._content = raw_response.get("content")
-        self._tool_calls = raw_response.get("tool_calls")
+        self._raw = raw_response
 
-        if not self._role:
+        if not self._raw.get("role"):
             raise agent.InferencePayloadError(f"Invalid Ollama response: 'role' is missing. Data: {raw_response}")
         
         # Note: content can be None if tool_calls are present, which is valid.
-        if self._content is None and not self._tool_calls:
+        if self._raw.get("content") is None and not self._raw.get("tool_calls"):
             raise agent.InferencePayloadError(f"Invalid Ollama response: Both 'content' and 'tool_calls' are empty.")
 
     @property
@@ -65,7 +63,7 @@ class OllamaInferenceResult(agent.InferenceResult):
         Returns:
             str: Typically 'assistant'.
         """
-        return self._role
+        return self._raw.get("role")
 
     @property
     def content(self) -> typing.Optional[str]:
@@ -75,7 +73,7 @@ class OllamaInferenceResult(agent.InferenceResult):
         Returns:
             Optional[str]: The message text or None if only tool calls are present.
         """
-        return self._content
+        return self._raw.get("content")
 
     @property
     def tool_calls(self) -> typing.Optional[typing.List[typing.Dict[str, typing.Any]]]:
@@ -85,7 +83,7 @@ class OllamaInferenceResult(agent.InferenceResult):
         Returns:
             Optional[List[Dict[str, Any]]]: Standardized tool call objects or None.
         """
-        return self._tool_calls
+        return self._raw.get("tool_calls")
 
     def to_dict(self) -> typing.Dict[str, typing.Any]:
         """
@@ -95,9 +93,9 @@ class OllamaInferenceResult(agent.InferenceResult):
             Dict[str, Any]: A dictionary containing 'role', 'content', and 'tool_calls'.
         """
         return {
-            "role": self._role,
-            "content": self._content,
-            "tool_calls": self._tool_calls
+            "role": self.role,
+            "content": self.content,
+            "tool_calls": self.tool_calls
         }
 
 __all__ = ["OllamaInferenceResult"]
